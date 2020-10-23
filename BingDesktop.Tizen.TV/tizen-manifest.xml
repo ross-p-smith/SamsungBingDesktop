@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="5" package="org.tizen.example.BingDesktop.Tizen.TV" version="1.0.0">
+	<feature name="http://tizen.org/feature/screen.size.normal.1080.1920">true</feature>
+  <profile name="tv" />
+  <ui-application appid="org.tizen.example.BingDesktop.Tizen.TV"
+					exec="BingDesktop.Tizen.TV.dll"
+					type="dotnet"
+					multiple="false"
+					taskmanage="true"
+					nodisplay="false"
+					launch_mode="single">
+    <label>BingDesktop.Tizen.TV</label>
+    <icon>BingDesktop.Tizen.TV.png</icon>
+  </ui-application>
+  <tv-info api-version="6.6.0">
+    <infolink>T-INFOLINK2020-1000</infolink>
+  </tv-info>
+</manifest>
