@@ -3,6 +3,9 @@
 ARG VARIANT="2.1"
 FROM mcr.microsoft.com/vscode/devcontainers/dotnetcore:${VARIANT}
 
+# Avoid warnings by switching to noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install needed packages, yarn, nvm and setup non-root user. Use a separate RUN statement to add your own dependencies.
 ARG USERNAME=node
 ARG USER_UID=1001
@@ -14,8 +17,8 @@ ENV NVM_SYMLINK_CURRENT=true \
     PATH=${NVM_DIR}/current/bin:${PATH}
 COPY library-scripts/*.sh /tmp/library-scripts/
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    apt-get install pciutils \
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends pciutils openjfx 2>&1 \
     # Install common packages, non-root user, update yarn and install nvm
     && bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
     # Install yarn, nvm
@@ -37,16 +40,19 @@ RUN mkdir -p ${JAVA_HOME} \
     && unzip /tmp/openjfx-11.0.2_linux-x64_bin-sdk.zip -d /tmp \
     && cp -arf /tmp/javafx-sdk-11.0.2/lib/* ${JAVA_HOME}/lib/ \
     && sudo update-alternatives --install /usr/bin/java java ${JAVA_HOME}/bin/java 20000 \
-    && sudo update-alternatives --install /usr/bin/javac javac ${JAVA_HOME}/bin/javac 20000
+    && sudo update-alternatives --install /usr/bin/javac javac ${JAVA_HOME}/bin/javac 20000 \
+    && sudo update-alternatives --config javac
 
 RUN curl -o /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
     http://download.tizen.org/sdk/Installer/tizen-studio_4.0/web-cli_Tizen_Studio_4.0_ubuntu-64.bin?
     
 RUN chmod +x /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
-    && mkdir -p /usr/local/share/tizen-studio
+    && mkdir -p /home/vscode/tizen-studio \
+    && chmod -R 777 /home/vscode/tizen-studio
 
-#RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /usr/local/share/tizen-studio
+# Install Tizen Studio under a user account
+USER vscode
+RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /home/vscode/tizen-studio
 
-#RUN curl -o csharp-1.21.12.vsix \
-#    https://github.com/OmniSharp/omnisharp-vscode/releases/download/v1.21.12/csharp-1.21.12.vsix
-
+# Switch back to dialog for any ad-hoc use of apt-get
+ENV DEBIAN_FRONTEND=dialog
