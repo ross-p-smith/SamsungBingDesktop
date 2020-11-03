@@ -1,0 +1,74 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "build",
+                // Ask dotnet build to generate full paths for file names.
+                "/property:GenerateFullPaths=true",
+                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "connect",
+            "command": "./sdb connect 192.168.1.193:26101",
+            "type":"shell",
+            "options":{
+                "cwd": "home/vscode/tizen-studio/tools/"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "disconnect",
+            "command": "./sdb disconnect 192.168.1.193:26101",
+            "type":"shell",
+            "options":{
+                "cwd": "home/vscode/tizen-studio/tools/"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "deploy",
+            "command": "./sdb install /workspaces/SamsungBingDesktop/BingDesktop.Tizen.TV/bin/Debug/tizen60/org.tizen.example.BingDesktop.Tizen.TV-1.0.0.tpk",
+            "type":"shell",
+            "options":{
+                "cwd": "home/vscode/tizen-studio/tools/"
+            },
+            "dependsOn":["build", "connect"],
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        }
+    ]
+}

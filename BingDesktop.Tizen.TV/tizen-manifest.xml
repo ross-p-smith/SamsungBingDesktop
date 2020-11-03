@@ -9,7 +9,7 @@
 					taskmanage="true"
 					nodisplay="false"
 					launch_mode="single">
-    <label>BingDesktop.Tizen.TV</label>
+    <label>One Week Hack</label>
     <icon>BingDesktop.Tizen.TV.png</icon>
   </ui-application>
   <tv-info api-version="6.6.0">
