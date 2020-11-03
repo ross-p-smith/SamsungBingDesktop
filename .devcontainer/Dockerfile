@@ -30,7 +30,7 @@ ENV NVM_SYMLINK_CURRENT=true \
 COPY library-scripts/*.sh /tmp/library-scripts/
 
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends pciutils 2>&1 \
+    && apt-get -y install --no-install-recommends pciutils openjfx 2>&1 \
     # Install common packages, non-root user, update yarn and install nvm
     && bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
     # Install yarn, nvm
@@ -55,6 +55,8 @@ RUN mkdir -p ${JAVA_HOME} \
 RUN chmod +x /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
     && mkdir -p /home/vscode/tizen-studio \
     && chmod -R 777 /home/vscode/tizen-studio
+    #\
+    #&& apt-get install openjfx
 
 USER vscode
 RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /home/vscode/tizen-studio

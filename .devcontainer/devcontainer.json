@@ -17,7 +17,7 @@
 	"extensions": [
 		//"ms-dotnettools.csharp",
 		//"ms-vscode.csharp",
-		".devcontainer/csharp-1.21.12.vsix",
+		"ms-vscode.csharp",
 		"tizen.vscode-tizen-csharp"
 	],
 
