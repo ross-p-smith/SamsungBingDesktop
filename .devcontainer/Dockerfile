@@ -1,15 +1,30 @@
+ARG VARIANT="2.1"
+
+FROM amd64/buildpack-deps:bionic-scm as jdk-downloader
+RUN curl -o /tmp/openjdk-12.0.2_linux-x64_bin.tar.gz \
+    https://download.java.net/java/GA/jdk12.0.2/e482c34c86bd4bf8b56c0b35558996b9/10/GPL/openjdk-12.0.2_linux-x64_bin.tar.gz
+
+FROM amd64/buildpack-deps:bionic-scm as jfx-downloader
+RUN curl -o /tmp/openjfx-11.0.2_linux-x64_bin-sdk.zip \
+    https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_linux-x64_bin-sdk.zip
+
+FROM amd64/buildpack-deps:bionic-scm as tizen-downloader
+RUN curl -o /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
+    http://download.tizen.org/sdk/Installer/tizen-studio_4.0/web-cli_Tizen_Studio_4.0_ubuntu-64.bin?
+
+
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.140.1/containers/ubuntu/.devcontainer/base.Dockerfile
 
-ARG VARIANT="2.1"
-FROM mcr.microsoft.com/vscode/devcontainers/dotnetcore:${VARIANT}
+FROM mcr.microsoft.com/vscode/devcontainers/dotnetcore:${VARIANT} AS devcontainer
 
 # Install needed packages, yarn, nvm and setup non-root user. Use a separate RUN statement to add your own dependencies.
 ARG USERNAME=node
 ARG USER_UID=1001
 ARG USER_GID=$USER_UID
 ARG UPDATE_RC="true"
-ENV JAVA_HOME=/usr/local/share/openJDK/jdk-12.0.2
-ENV NVM_DIR=/usr/local/share/nvm
+ENV JAVA_HOME=/usr/local/share/openJDK/jdk-12.0.2 \
+    NVM_DIR=/usr/local/share/nvm \
+    DEBIAN_FRONTEND=noninteractive
 ENV NVM_SYMLINK_CURRENT=true \ 
     PATH=${NVM_DIR}/current/bin:${PATH}
 COPY library-scripts/*.sh /tmp/library-scripts/
@@ -24,11 +39,9 @@ RUN apt-get update \
     # Clean up
     && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /root/.gnupg /tmp/library-scripts
 
-RUN curl -o /tmp/openjdk-12.0.2_linux-x64_bin.tar.gz \
-    https://download.java.net/java/GA/jdk12.0.2/e482c34c86bd4bf8b56c0b35558996b9/10/GPL/openjdk-12.0.2_linux-x64_bin.tar.gz
-
-RUN curl -o /tmp/openjfx-11.0.2_linux-x64_bin-sdk.zip \
-    https://download2.gluonhq.com/openjfx/11.0.2/openjfx-11.0.2_linux-x64_bin-sdk.zip
+COPY --from=jdk-downloader /tmp/openjdk-12.0.2_linux-x64_bin.tar.gz /tmp/openjdk-12.0.2_linux-x64_bin.tar.gz
+COPY --from=jfx-downloader /tmp/openjfx-11.0.2_linux-x64_bin-sdk.zip /tmp/openjfx-11.0.2_linux-x64_bin-sdk.zip
+COPY --from=tizen-downloader /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin
 
 RUN bash -c ". $NVM_DIR/nvm.sh && nvm install --lts"
 
@@ -39,13 +52,12 @@ RUN mkdir -p ${JAVA_HOME} \
     && sudo update-alternatives --install /usr/bin/java java ${JAVA_HOME}/bin/java 20000 \
     && sudo update-alternatives --install /usr/bin/javac javac ${JAVA_HOME}/bin/javac 20000
 
-RUN curl -o /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
-    http://download.tizen.org/sdk/Installer/tizen-studio_4.0/web-cli_Tizen_Studio_4.0_ubuntu-64.bin?
-    
 RUN chmod +x /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
-    && mkdir -p /usr/local/share/tizen-studio
+    && mkdir -p /home/vscode/tizen-studio \
+    && chmod -R 777 /home/vscode/tizen-studio
 
-#RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /usr/local/share/tizen-studio
+USER vscode
+RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /home/vscode/tizen-studio
 
 #RUN curl -o csharp-1.21.12.vsix \
 #    https://github.com/OmniSharp/omnisharp-vscode/releases/download/v1.21.12/csharp-1.21.12.vsix

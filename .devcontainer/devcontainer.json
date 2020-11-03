@@ -17,9 +17,9 @@
 	"extensions": [
 		//"ms-dotnettools.csharp",
 		//"ms-vscode.csharp",
-		"csharp-1.21.12.vsix",
+		".devcontainer/csharp-1.21.12.vsix",
 		"tizen.vscode-tizen-csharp"
-	]
+	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -28,5 +28,5 @@
 	// "postCreateCommand": "uname -a",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+	"remoteUser": "vscode"
 }
