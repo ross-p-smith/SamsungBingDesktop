@@ -64,3 +64,5 @@ RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /home/vscode/ti
 #RUN curl -o csharp-1.21.12.vsix \
 #    https://github.com/OmniSharp/omnisharp-vscode/releases/download/v1.21.12/csharp-1.21.12.vsix
 
+# Copy the older csharp extension dependency
+COPY csharp-1.21.12.vsix /tmp/
