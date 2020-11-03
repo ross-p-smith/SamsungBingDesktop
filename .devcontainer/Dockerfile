@@ -14,8 +14,8 @@ ENV NVM_SYMLINK_CURRENT=true \
     PATH=${NVM_DIR}/current/bin:${PATH}
 COPY library-scripts/*.sh /tmp/library-scripts/
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    apt-get install pciutils \
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends pciutils 2>&1 \
     # Install common packages, non-root user, update yarn and install nvm
     && bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
     # Install yarn, nvm
