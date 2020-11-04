@@ -76,3 +76,5 @@ ADD csharp-1.21.12.zip /tmp/csharp-1.21.12.zip
 RUN unzip /tmp/csharp-1.21.12.zip -d /tmp/csharp \
     && mv /tmp/csharp/extension /home/$USERNAME/.vscode-server/extensions/ms-vscode.csharp-1.21.12
 
+# Copy the older csharp extension dependency
+COPY csharp-1.21.12.vsix /tmp/

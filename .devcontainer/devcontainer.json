@@ -17,7 +17,8 @@
 	"extensions": [
 		"ms-dotnettools.csharp",
 		"ms-vscode.csharp",
-		"tizen.vscode-tizen-csharp"
+		"tizen.vscode-tizen-csharp",
+		"/tmp/csharp-1.21.12.vsix"		
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
