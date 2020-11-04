@@ -22,7 +22,7 @@
         },
         {
             "label": "connect",
-            "command": "./sdb connect 192.168.1.193:26101",
+            "command": "./sdb connect ${input:deviceIP}",
             "type":"shell",
             "options":{
                 "cwd": "home/vscode/tizen-studio/tools/"
@@ -38,7 +38,7 @@
         },
         {
             "label": "disconnect",
-            "command": "./sdb disconnect 192.168.1.193:26101",
+            "command": "./sdb disconnect ${input:deviceIP}",
             "type":"shell",
             "options":{
                 "cwd": "home/vscode/tizen-studio/tools/"
@@ -69,6 +69,14 @@
                 "showReuseMessage": true,
                 "clear": false
             }
+        }
+    ],
+    "inputs": [
+        {
+          "type": "promptString",
+          "id": "deviceIP",
+          "description": "What is your device IP (and port)?",
+          "default": "192.168.1.193:26101"
         }
     ]
 }
