@@ -60,27 +60,7 @@ RUN mkdir -p ${JAVA_HOME} \
 RUN echo "deb http://mirrors.kernel.org/ubuntu/ xenial main" >> /etc/apt/sources.list \
     && apt-get update \
     && apt-get -y install --no-install-recommends acl bridge-utils openvpn libfontconfig1 libglib2.0-0 libjpeg-turbo8 libpixman-1-0 libpng12-0 libsdl1.2debian libsm6 libv4l-0 libx11-xcb1 libxcb-icccm4 libxcb-image0 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xfixes0 libxi6
-
-# RUN sudo apt-get install acl \
-#     && bridge-utils \
-#     && openvpn \
-#     && libfontconfig1 \
-#     && libglib2.0-0 \
-#     && libjpeg-turbo8 \
-#     && libpixman-1-0 \
-#     && libpng12-0 \
-#     && libsdl1.2debian \
-#     && libsm6 \
-#     && libv4l-0 \
-#     && libx11-xcb1 \
-#     && libxcb-icccm4 \
-#     && libxcb-image0 \
-#     && libxcb-randr0 \ 
-#     && libxcb-render-util0 \
-#     && libxcb-shape0 \
-#     && libxcb-xfixes0 \
-#     && libxi6
-
+ 
 # Setup resources that are owned by the 'vscode' user
 ARG USERNAME=vscode
 RUN mkdir -p /home/$USERNAME/tizen-studio \
