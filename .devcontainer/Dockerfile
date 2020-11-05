@@ -14,7 +14,7 @@ RUN curl -o /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin \
     http://download.tizen.org/sdk/Installer/tizen-studio_4.0/web-cli_Tizen_Studio_4.0_ubuntu-64.bin?
 
 FROM amd64/buildpack-deps:bionic-scm as legacy_csharp_downloader
-RUN curl -o /tmp/csharp-1.21.12.zip \
+RUN curl -o /tmp/csharp-1.21.12.vsix \
     https://github.com/OmniSharp/omnisharp-vscode/releases/download/v1.21.12/csharp-1.21.12.vsix
 
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.140.1/containers/ubuntu/.devcontainer/base.Dockerfile
@@ -56,13 +56,35 @@ RUN mkdir -p ${JAVA_HOME} \
     && sudo update-alternatives --install /usr/bin/javac javac ${JAVA_HOME}/bin/javac 20000 \
     && chmod +x /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin
 
+# Tizen Emulator dependencies
+RUN echo "deb http://mirrors.kernel.org/ubuntu/ xenial main" >> /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends acl bridge-utils openvpn libfontconfig1 libglib2.0-0 libjpeg-turbo8 libpixman-1-0 libpng12-0 libsdl1.2debian libsm6 libv4l-0 libx11-xcb1 libxcb-icccm4 libxcb-image0 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xfixes0 libxi6
+
+# RUN sudo apt-get install acl \
+#     && bridge-utils \
+#     && openvpn \
+#     && libfontconfig1 \
+#     && libglib2.0-0 \
+#     && libjpeg-turbo8 \
+#     && libpixman-1-0 \
+#     && libpng12-0 \
+#     && libsdl1.2debian \
+#     && libsm6 \
+#     && libv4l-0 \
+#     && libx11-xcb1 \
+#     && libxcb-icccm4 \
+#     && libxcb-image0 \
+#     && libxcb-randr0 \ 
+#     && libxcb-render-util0 \
+#     && libxcb-shape0 \
+#     && libxcb-xfixes0 \
+#     && libxi6
+
 # Setup resources that are owned by the 'vscode' user
 ARG USERNAME=vscode
 RUN mkdir -p /home/$USERNAME/tizen-studio \
-    /home/$USERNAME/.vscode-server/extensions \
-    && chown -R $USERNAME \
-        /home/$USERNAME/tizen-studio \
-        /home/$USERNAME/.vscode-server
+    && chown -R $USERNAME /home/$USERNAME/tizen-studio
 
 # Tizen needs installing as a non root user
 USER $USERNAME
@@ -70,9 +92,10 @@ RUN /tmp/web-cli_Tizen_Studio_4.0_ubuntu-64.bin --accept-license /home/$USERNAME
 
 # Tizen vscode plugin has a dependency on an old Omni Sharp Library that has since been renamed
 # Downloading it seems to corrupt the file. Normally you use `code --install-extension blah`
-# but we are are actually in code - so manually install teh package
-#COPY --from=legacy_csharp_downloader /tmp/csharp-1.21.12.vsix /tmp/csharp-1.21.12.zip
-ADD csharp-1.21.12.zip /tmp/csharp-1.21.12.zip
-RUN unzip /tmp/csharp-1.21.12.zip -d /tmp/csharp \
-    && mv /tmp/csharp/extension /home/$USERNAME/.vscode-server/extensions/ms-vscode.csharp-1.21.12
+# but we are are actually in code - so manually install the package
+COPY csharp-1.21.12.vsix /tmp/
+#COPY --from=legacy_csharp_downloader /tmp/csharp-1.21.12.vsix /tmp/csharp-1.21.12.vsix
+#ADD csharp-1.21.12.zip /tmp/csharp-1.21.12.zip
+#RUN unzip /tmp/csharp-1.21.12.zip -d /tmp/csharp \
+#    && mv /tmp/csharp/extension /home/$USERNAME/.vscode-server/extensions/ms-vscode.csharp-1.21.12
 
