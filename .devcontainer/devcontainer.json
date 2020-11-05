@@ -16,8 +16,11 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-dotnettools.csharp",
-		"ms-vscode.csharp",
-		"tizen.vscode-tizen-csharp"
+		"tizen.vscode-tizen-csharp",
+		// This is not available anymore in the Marketplace so it is kept in source just
+		// to get the Tizen extension to be quiet.
+		//"ms-vscode.csharp",
+		"/tmp/csharp-1.21.12.vsix"		
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
